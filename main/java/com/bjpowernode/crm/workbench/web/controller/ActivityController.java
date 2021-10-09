@@ -34,7 +34,69 @@ public class ActivityController extends HttpServlet {
         }else if("/workbench/activity/pageList.do".equals(path)){
             System.out.println("进入pageList功能");
             pageList(request,response);
+        }else if ("/workbench/activity/delete.do".equals(path)){
+            System.out.println("进入Controller delete function");
+            delete(request,response);
+        }else if ("/workbench/activity/getUserListAndActivity.do".equals(path)){
+            System.out.println("进入Controller getUserListAndActivity function");
+            getUserListAndActivity(request,response);
+        }else if ("/workbench/activity/update.do".equals(path)){
+            System.out.println("进入Controller update function");
+            update(request,response);
         }
+    }
+
+    private void update(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("执行市场活动的修改操作");
+
+        String id = request.getParameter("id");
+        String owner = request.getParameter("owner");
+        String name = request.getParameter("name");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String cost = request.getParameter("cost");
+        String description = request.getParameter("description");
+        String editTime = DateTimeUtil.getSysTime(); //修改时间为现在系统时间
+        String editBy = ((User)request.getSession().getAttribute("user")).getName(); //修改人为当前的用户
+
+        Activity at = new Activity();
+        at.setId(id);
+        at.setCost(cost);
+        at.setSTartDate(startDate);
+        at.setOwner(owner);
+        at.setName(name);
+        at.setEndDate(endDate);
+        at.setDescription(description);
+        at.setCreateTime(editBy);
+        at.setCreateBy(editTime);
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        boolean flag = as.update(at);
+        System.out.println("falge ======" + flag);
+
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    private void getUserListAndActivity(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println( "getUserListAndActivity 查询用户信息列表");
+        String id = request.getParameter("id");
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        Map<String,Object> map = as.getUserListAndActivity(id);
+
+        PrintJson.printJsonObj(response,map);
+
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("controller delete function strat");
+        String ids[] = request.getParameterValues("id");
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = as.delete(ids);
+        PrintJson.printJsonFlag(response,flag);
+
     }
 
     private void pageList(HttpServletRequest request, HttpServletResponse response) {

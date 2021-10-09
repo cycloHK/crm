@@ -31,10 +31,10 @@ public class LoginFilter implements Filter {
             User user = (User) session.getAttribute("user");
             //如果user不为空，说明登陆过
             if (user!=null){
+                System.out.println("放行");
                 chain.doFilter(req,resp);
             }else{
                 response.sendRedirect(request.getContextPath()+"/login.jsp");
-
             }
         }
     }
