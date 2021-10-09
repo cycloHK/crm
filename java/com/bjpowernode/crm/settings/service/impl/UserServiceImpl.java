@@ -14,7 +14,7 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
-    //登录业务
+    //登录业务宿舍收到
     public User login(String loginAct, String loginPwd, String ip) throws LoginException {
         //业务层先进入dao层 查看账号密码
         Map<String,String> map = new HashMap<String, String >();
